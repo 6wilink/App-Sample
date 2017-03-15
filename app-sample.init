@@ -1,0 +1,38 @@
+#!/bin/sh /etc/rc.common
+# maintainer: Qige Zhao
+# updated on: 2017.03.15
+
+START=90
+STOP=90
+
+APP=app-demo
+CONF=/etc/config/$APP
+CMD=/usr/sbin/$APP
+
+uci_conf() {
+	local conf="$1"
+	
+	config_get 		idle 	"$conf" idle
+	config_get 		key 	"$conf" key
+	config_get_bool bkg		"$conf" bkg
+
+	if [ "$bkg" -eq 1 ]; then
+		$CMD -D -k $key -i $idle >/dev/null 2>&1
+	else
+		$CMD -k $key -i $idle >/dev/null 2>&1 &
+	fi
+}
+
+start() {
+	if [ -f $CONF ]; then
+		config_load $CONF
+		config_foreach uci_conf $APP
+	else
+		echo "* config file missing, using default settings"
+		$CMD -D >/dev/null 2>&1
+	fi
+}
+
+stop() {
+	killall $APP
+}
