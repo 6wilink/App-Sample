@@ -29,7 +29,7 @@ int FLAG_TASK_EXIT = 0;
 // if you want to fork a process, do it here;
 int gws5k_task_Run(const void *env)
 {
-	APP_ENV *conf = (APP_ENV *) &env;
+	APP_ENV *conf = (APP_ENV *) env;
 	int idle = conf->conf.idle ? conf->conf.idle : GWS5K_TASK_DFL_IDLE;
 	for( ; ; ) {
 		if ( FLAG_TASK_EXIT ) {
